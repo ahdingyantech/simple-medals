@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.description = "A Simple achievement medals tool for ActiveRecord."
   s.authors     = ["Kaid Wong"]
   s.email       = "kaid@kaid.me"
-  s.files       = Dir.glob("lib/**/*[^(~|#)]") + %w(simple_comment.gemspec)
+  s.files       = Dir.glob("lib/**/*[^(~|#)]") + %w(simple-medals.gemspec)
   s.homepage    = "http://github.com/kaid/simple-medals"
 
   s.required_ruby_version = ">= 1.9.2"
