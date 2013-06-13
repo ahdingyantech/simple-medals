@@ -19,11 +19,7 @@ class Medal
   end
 
   def give_to(user)
-    a = UserMedal.new(:medal_name => self.medal_name, :user => user)
-    a.valid?
-    #p ">>>>>>>>>>>>>>>>>>#{a.errors.messages}"
-    #                       p "++++++++++++++++++#{user.user_medals}"                           
-    a.save
+    UserMedal.new(:medal_name => self.medal_name, :user => user).save
   end
 
   def self.get(medal_name)
