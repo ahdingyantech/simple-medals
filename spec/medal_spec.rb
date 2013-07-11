@@ -114,6 +114,8 @@ describe Medal do
       it "with options" do
         newbie.give_to(user, data: data, model: dummy)
         user.has_medal?(newbie, data: data, model: dummy).should be true
+        user.has_medal?(newbie, data: "heihei", model: dummy).should be false
+        user.has_medal?(guru, data: "heihei", model: dummy).should be false
       end
     end
   end
