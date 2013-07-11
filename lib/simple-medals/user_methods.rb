@@ -19,8 +19,10 @@ class Medal
         end.sort_by {|medal| medal.name}
       end
 
-      def has_medal?(medal)
+      def has_medal?(medal, options = {})
         _medal = medal.is_a?(Medal) ? medal : Medal.get(medal)
+
+        _medal.users(options).include?(self) &&
         self.medals.include?(_medal)
       end
     end

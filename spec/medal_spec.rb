@@ -16,9 +16,13 @@ describe Medal do
       }
     }
   end
-  let(:newbie) {Medal.get(:NEWBIE)}
-  let(:guru)   {Medal.get(:GURU)}
-  let(:user)   {FactoryGirl.create :user}
+
+  let(:data)     {"Newbie lv.1!"}
+  let(:newbie)   {Medal.get(:NEWBIE)}
+  let(:guru)     {Medal.get(:GURU)}
+  let(:user)     {FactoryGirl.create :user}
+  let(:dummy)    {FactoryGirl.create :dummy_model, user: user}
+  let(:instance) {user.user_medals.first}
 
   describe ".get" do
     subject {guru}
@@ -30,6 +34,30 @@ describe Medal do
     its(:icon_url) {should eq "/assets/medals/guru.png"}
   end
 
+  describe "#users" do
+    before  {newbie.give_to(user, data: data, model: dummy)}
+
+    context "without options" do
+      subject {newbie.users}
+
+      it {should include user}
+    end
+
+    context "with options" do
+      context "with matching options" do
+        subject {newbie.users data: data, model: dummy}
+
+        it {should include user}
+      end
+
+      context "with unmatching options" do
+        subject {newbie.users data: "Unmatching!", model: dummy}
+
+        it {should_not include user}
+      end
+    end
+  end
+
   describe "#give_to" do
     context "when user doesn't meet :after requirements" do
       subject {guru.give_to(user)}
@@ -38,7 +66,7 @@ describe Medal do
     end
 
     context "when user already have this medal" do
-      before {newbie.give_to(user)}
+      before  {newbie.give_to(user)}
       subject {newbie.give_to(user)}
 
       it {user.user_medals.count.should be 1}
@@ -46,8 +74,21 @@ describe Medal do
     end
 
     context "when user is elegible to get this medal" do
-      before {newbie.give_to(user)}
+      before  {newbie.give_to(user)}
       subject {guru.give_to(user)}
+
+      it {should be true}
+    end
+
+    context "when give a medal with options" do
+      subject {newbie.give_to(user, data: data, model: dummy)}
+
+      specify "the created medal has additional infos " do
+        subject
+        instance.data.should eq data
+        instance.model_id.should be dummy.id
+        instance.model_type.should eq dummy.class.to_s
+      end
 
       it {should be true}
     end
@@ -66,15 +107,18 @@ describe Medal do
     end
 
     describe "#has_medal?" do
-      subject {user.has_medal?(guru)}
+      it "without options" do
+        user.has_medal?(guru).should be true
+      end
 
-      it {should be true}
+      it "with options" do
+        newbie.give_to(user, data: data, model: dummy)
+        user.has_medal?(newbie, data: data, model: dummy).should be true
+      end
     end
   end
 
   describe Medal::ModelMethods do
-    let(:dummy)  {FactoryGirl.create :dummy_model, :user => user}
-
     context "when after model creation" do
       it {expect {dummy}.to change {user.user_medals.count}.by(1)}
     end

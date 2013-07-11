@@ -11,6 +11,7 @@ class Medal
           condition = options[:if].call(model, user)
 
           Medal.get(medal_name).give_to(user) if condition
+          true
         end
       end
     end

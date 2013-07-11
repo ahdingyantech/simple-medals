@@ -1,3 +1,5 @@
+require 'generators/templates/migration'
+
 ActiveRecord::Base.logger = ActiveSupport::BufferedLogger.new(File.dirname(__FILE__) + "/debug.log")
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
 ActiveRecord::Schema.define do
@@ -7,14 +9,9 @@ ActiveRecord::Schema.define do
     t.integer :user_id
     t.boolean :dummy, :default => false
   end unless table_exists?(:dummy_models)
-
-  create_table :user_medals, :force => true do |t|
-    t.integer  :user_id
-    t.string   :medal_name
-    t.datetime :created_at
-    t.datetime :updated_at
-  end unless table_exists?(:user_medals)
 end
+
+SetupSimpleMedals.migrate(:up)
 
 class DummyModel < ActiveRecord::Base
   include Medal::ModelMethods

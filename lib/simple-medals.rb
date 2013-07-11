@@ -18,8 +18,27 @@ class Medal
     "/assets/medals/#{icon}"
   end
 
-  def give_to(user)
-    UserMedal.new(:medal_name => self.medal_name, :user => user).save
+  def give_to(user, options = {})
+    instance = UserMedal.new(:medal_name => self.medal_name, :user => user)
+    instance.data  = options[:data]  if options[:data]
+    instance.model = options[:model] if options[:model]
+    instance.save
+  end
+
+  def query_options(options)
+    query = options.to_a.map do |pair|
+      if pair[0] == :model
+        [:model_id, pair[1].id, :model_type, pair[1].class.to_s]
+      else
+        pair
+      end
+    end.flatten.concat [:medal_name, medal_name]
+
+    Hash[*query]
+  end
+
+  def users(options = {})
+    User.joins(:user_medals).where(:user_medals => query_options(options))
   end
 
   def self.get(medal_name)
