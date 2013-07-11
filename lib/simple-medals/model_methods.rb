@@ -6,7 +6,7 @@ class Medal
 
     module ClassMethods
       def give_medal(medal_name, options = {})
-        send(:"before_#{options[:on]}") do |model|
+        send(:"after_#{options[:on]}") do |model|
           user = options[:user].call(model)
           condition = options[:if].call(model, user)
 
