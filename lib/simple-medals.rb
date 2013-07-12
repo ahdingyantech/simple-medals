@@ -63,11 +63,14 @@ class Medal
 private
 
   def update_is_shown_for_user(user, value)
-    method_name = value ? :has_medal? : :has_shown_medal?
-    return false if !user.send method_name, self
+    return false if !is_user_eligible_to_update_shown_status(user, value)
 
     user_medal = get_medal_record_from_user(user)
     user_medal.update_attributes(:is_shown => value)
+  end
+
+  def is_user_eligible_to_update_shown_status(user, value)
+    user.send (value ? :has_medal? : :has_shown_medal?), self
   end
 
   def get_medal_record_from_user(user)
