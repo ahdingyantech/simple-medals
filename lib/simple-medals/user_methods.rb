@@ -13,8 +13,8 @@ class Medal
     end
 
     module InstanceMethods
-      def medals
-        self.user_medals.where("").map do |user_medal|
+      def medals(options = {})
+        self.user_medals.where(options).map do |user_medal|
           Medal.get(user_medal.medal_name)
         end.sort_by {|medal| medal.name}
       end
@@ -24,6 +24,14 @@ class Medal
 
         _medal.users(options).include?(self) &&
         self.medals.include?(_medal)
+      end
+
+      def has_shown_medal?(medal)
+        has_medal?(medal, :is_shown => true)
+      end
+
+      def shown_medals
+        medals(:is_shown => true)
       end
     end
   end

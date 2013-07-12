@@ -41,6 +41,14 @@ class Medal
     User.joins(:user_medals).where(:user_medals => query_options(options))
   end
 
+  def set_shown(user)
+    update_is_shown_for_user(user, true)
+  end
+
+  def cancel_shown(user)
+    update_is_shown_for_user(user, false)
+  end
+
   def self.get(medal_name)
     instances[medal_name.to_sym]
   end
@@ -50,6 +58,20 @@ class Medal
       acc[medal_name] = Medal.new(medal_name)
       acc
     end
+  end
+
+private
+
+  def update_is_shown_for_user(user, value)
+    method_name = value ? :has_medal? : :has_shown_medal?
+    return false if !user.send method_name, self
+
+    user_medal = get_medal_record_from_user(user)
+    user_medal.update_attributes(:is_shown => value)
+  end
+
+  def get_medal_record_from_user(user)
+    user.user_medals.where(:medal_name => self.medal_name).first
   end
 end
 

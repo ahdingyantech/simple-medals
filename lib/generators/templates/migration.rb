@@ -7,6 +7,7 @@ class SetupSimpleMedals < ActiveRecord::Migration
       t.text    :data
       t.integer :model_id
       t.string  :model_type
+      t.boolean :is_shown, :default => false
       t.timestamps
     end
   end

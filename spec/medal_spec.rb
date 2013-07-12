@@ -94,10 +94,65 @@ describe Medal do
     end
   end
 
+  describe "#set_shown" do
+    before  {newbie.give_to(user)}
+    subject {newbie.set_shown(user)}
+
+    it {should be true}
+    it "sets corresponding user_medal's is_shown to true" do
+      expect {subject}.to change {user.user_medals.first.is_shown}.from(false).to(true)
+    end
+
+    context "when user does not have this medal" do
+      before {user.user_medals.destroy_all}
+
+      it {should be false}
+    end
+  end
+
+  describe "#set_shown" do
+    before  {
+      newbie.give_to(user)
+      newbie.set_shown(user)
+    }
+    subject {newbie.cancel_shown(user)}
+
+    it {should be true}
+    it "sets corresponding user_medal's is_shown to true" do
+      expect {subject}.to change {user.user_medals.first.is_shown}.from(true).to(false)
+    end
+
+    context "when user does not have this medal shown" do
+      before {user.user_medals.first.update_attribute(:is_shown, false)}
+
+      it {should be false}
+    end
+  end
+
   describe Medal::UserMethods do
     before do
       newbie.give_to(user)
       guru.give_to(user)
+    end
+
+    describe "#shown_medals" do
+      before  {newbie.set_shown(user)}
+      subject {user.shown_medals}
+
+      it {should include newbie}
+    end
+
+    describe "#has_shown_medal?" do
+      before  {newbie.set_shown(user)}
+      subject {user.has_shown_medal?(newbie)}
+
+      it {should be true}
+
+      context "when newbie is not shown" do
+        before {newbie.cancel_shown(user)}
+
+        it {should be false}
+      end
     end
 
     describe "#medals" do
