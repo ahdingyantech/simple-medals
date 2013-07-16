@@ -3,16 +3,16 @@ require "spec_helper"
 describe Medal do
   before do
     stub_const "MEDALS", {
-      :NEWBIE => {
-        :icon => "newbie.png",
-        :name => "newbie",
-        :desc => "dummy noooob"
+      NEWBIE: {
+        icon: "newbie.png",
+        name: "newbie",
+        desc: "dummy noooob"
       },
-      :GURU => {
-        :icon => "guru.png",
-        :name => "guru",
-        :desc => "awesome guru",
-        :after => [:NEWBIE]
+      GURU: {
+        icon: "guru.png",
+        name: "guru",
+        desc: "awesome guru",
+        after: [:NEWBIE]
       }
     }
   end
@@ -193,11 +193,11 @@ describe Medal do
   end
 
   describe Medal::NoMedalsDefError do
-    it {
-      expect {
-        hide_const("::MEDALS")
-        newbie
-      }.to raise_error {Medal::NoMedalsDefError}
-    }
+    subject do
+      Object.send :remove_const, :"::MEDALS"
+      newbie
+    end
+
+    it {expect {subject}.to raise_error {Medal::NoMedalsDefError}}
   end
 end

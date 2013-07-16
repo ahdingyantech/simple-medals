@@ -3,6 +3,7 @@ require 'active_record'
 class Medal
   NoMedalsDefError = Class.new(Exception)
 
+  private_class_method :new
   attr_reader :medal_name, :name, :desc, :icon
 
   def initialize(medal_name)
@@ -58,7 +59,7 @@ class Medal
 
   def self.instances
     @instances ||= ::MEDALS.reduce({}) do |acc, (medal_name, _)|
-      acc[medal_name] = self.new(medal_name)
+      acc[medal_name] = new(medal_name)
       acc
     end
   rescue NameError
