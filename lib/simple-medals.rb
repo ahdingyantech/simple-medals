@@ -11,8 +11,6 @@ class Medal
     MEDALS[medal_name.to_sym].each do |k, v|
       instance_variable_set("@#{k}", v)
     end
-  rescue NameError
-    raise NoMedalsDefError.new("Please defined `MEDALS` constant with desired medal definations.")
   end
 
   def after
@@ -60,9 +58,11 @@ class Medal
 
   def self.instances
     @instances ||= ::MEDALS.reduce({}) do |acc, (medal_name, _)|
-      acc[medal_name] = Medal.new(medal_name)
+      acc[medal_name] = self.new(medal_name)
       acc
     end
+  rescue NameError
+    raise NoMedalsDefError.new("Please defined `MEDALS` constant with desired medal definations.")
   end
 
 private

@@ -193,8 +193,11 @@ describe Medal do
   end
 
   describe Medal::NoMedalsDefError do
-    before {hide_const("MEDALS")}
-
-    it {expect {newbie}.to raise_error {Medal::NoMedalsDefError}}
+    it {
+      expect {
+        hide_const("::MEDALS")
+        newbie
+      }.to raise_error {Medal::NoMedalsDefError}
+    }
   end
 end
