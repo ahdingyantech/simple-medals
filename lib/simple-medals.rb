@@ -1,13 +1,18 @@
 require 'active_record'
 
 class Medal
+  NoMedalsDefError = Class.new(Exception)
+
   attr_reader :medal_name, :name, :desc, :icon
 
   def initialize(medal_name)
     @medal_name = medal_name.to_sym
+
     MEDALS[medal_name.to_sym].each do |k, v|
       instance_variable_set("@#{k}", v)
     end
+  rescue NameError
+    raise NoMedalsDefError.new("Please defined `MEDALS` constant with desired medal definations.")
   end
 
   def after
