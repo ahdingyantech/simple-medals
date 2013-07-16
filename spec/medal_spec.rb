@@ -110,7 +110,7 @@ describe Medal do
     end
   end
 
-  describe "#set_shown" do
+  describe "#cancel_shown" do
     before  {
       newbie.give_to(user)
       newbie.set_shown(user)
