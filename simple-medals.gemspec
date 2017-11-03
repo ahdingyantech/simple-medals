@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "simple-medals"
-  s.version     = "0.1.0"
+  s.version     = "0.1.1"
   s.summary     = "Simple achievement medals tool."
   s.description = "A Simple achievement medals tool for ActiveRecord."
   s.authors     = ["Kaid Wong"]
